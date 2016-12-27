@@ -49,15 +49,16 @@ module.exports = function(RED) {
 
 		node.on('input', function(msg){
 			var now = new Date();
-			var day = now.getUTCDay();
-			var hour = now.getUTCHours();
-			var mins = now.getUTCMinutes();
+			var day = now.getDay();
+			var hour = now.getHours();
+			var mins = now.getMinutes();
 			for (var i=0; i< node.events.length; i++) {
 				var evtStart = new Date();
 				evtStart.setTime(Date.parse(node.events[i].start));
 				var evtEnd =  new Date();
 				evtEnd.setTime(Date.parse(node.events[i].end));
-				
+
+				// console.log("---------");
 				// console.log("Now: ", now);
 				// console.log("Now hour: ", hour);
 				// console.log("Now mins: ", mins);
@@ -65,14 +66,20 @@ module.exports = function(RED) {
 				// console.log("Start hour: ",evtStart.getUTCHours());
 				// console.log("Start mins: ",evtStart.getUTCMinutes());
 				// console.log("End: ",evtEnd);
+				// console.log("evtStart.getDay(): ",evtStart.getDay());
+				// console.log("day: ",day);
 
-				if (evtStart.getUTCDay() === day) { //same day of week
-					evtStart.setFullYear(now.getFullYear(),now.getUTCMonth(), now.getUTCDate());
-					evtEnd.setFullYear(now.getFullYear(),now.getUTCMonth(), now.getUTCDate());
+				if (evtStart.getDay() === day) { //same day of week
+					evtStart.setFullYear(now.getFullYear(),now.getMonth(), now.getDate());
+					evtEnd.setFullYear(now.getFullYear(),now.getMonth(), now.getDate());
 
-					var start = ((evtStart.getUTCHours() * 60) + evtStart.getUTCMinutes());
-					var end = ((evtEnd.getUTCHours() * 60) + evtEnd.getUTCMinutes());
+					var start = ((evtStart.getHours() * 60) + evtStart.getMinutes());
+					var end = ((evtEnd.getHours() * 60) + evtEnd.getMinutes());
 					var test = ((hour * 60) + mins);
+
+					// console.log("start: ", start);
+					// console.log("end: ", end);
+					// console.log("test: ", test);
 
 					if (test >= start &&  test <= end) {
 						node.send([[msg],[]]);
