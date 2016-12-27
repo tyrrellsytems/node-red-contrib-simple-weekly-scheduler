@@ -71,17 +71,18 @@ module.exports = function(RED) {
 
 				if (evtStart.getDay() === day) { //same day of week
 					evtStart.setFullYear(now.getFullYear(),now.getMonth(), now.getDate());
-					evtEnd.setFullYear(now.getFullYear(),now.getMonth(), now.getDate());
+                    // if event ends at midnight, need to add an extra day to the end date
+                    var midnight = 0;
+                    if(evtEnd.getDay() > day) {
+                        midnight = 1;
+                    }
+					evtEnd.setFullYear(now.getFullYear(),now.getMonth(), now.getDate() + midnight);
+                    
+					// console.log("evtStart: ", evtStart);
+					// console.log("evtEnd: ", evtEnd);
+					// console.log("now: ", now);
 
-					var start = ((evtStart.getHours() * 60) + evtStart.getMinutes());
-					var end = ((evtEnd.getHours() * 60) + evtEnd.getMinutes());
-					var test = ((hour * 60) + mins);
-
-					// console.log("start: ", start);
-					// console.log("end: ", end);
-					// console.log("test: ", test);
-
-					if (test >= start &&  test <= end) {
+					if (now >= evtStart &&  now <= evtEnd) {
 						node.send([[msg],[]]);
 					} else {
 						node.send([[],msg]);
