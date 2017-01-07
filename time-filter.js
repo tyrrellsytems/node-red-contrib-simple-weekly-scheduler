@@ -50,6 +50,7 @@ module.exports = function(RED) {
 		node.on('input', function(msg){
 			var now = new Date();
 			var day = now.getDay();
+			var allowed = false;
 			for (var i=0; i< node.events.length; i++) {
 				var evtStart = new Date();
 				evtStart.setTime(Date.parse(node.events[i].start));
@@ -76,16 +77,16 @@ module.exports = function(RED) {
 					// console.log("evtEnd: ", evtEnd);
 					// console.log("now: ", now);
 
-					if (now >= evtStart &&  now <= evtEnd) {
+					if (now >= evtStart && now <= evtEnd) {
+						allowed = true;
 						node.send([[msg],[]]);
-					} else {
-						node.send([[],msg]);
+						break;
 					}
-				} else {
-					node.send([[],msg]);
 				}
 			}
-
+			if(!allowed) {
+				node.send([[],msg]);
+			}
 		});
 
 		node.centralInterval = setInterval(checkCentral,600000); //once every 10mins
