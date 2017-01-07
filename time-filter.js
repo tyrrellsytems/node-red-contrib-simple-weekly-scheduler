@@ -68,7 +68,7 @@ module.exports = function(RED) {
 					evtStart.setFullYear(now.getFullYear(),now.getMonth(), now.getDate());
 					// if event ends at midnight, need to add an extra day to the end date
 					var midnight = 0;
-					if(evtEnd.getDate() > day) {
+					if(evtEnd.getHours() +  evtEnd.getMinutes() == 0) {
 						midnight = 1;
 					}
 					evtEnd.setFullYear(now.getFullYear(),now.getMonth(), now.getDate() + midnight);
