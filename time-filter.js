@@ -50,6 +50,7 @@ module.exports = function(RED) {
 		node.on('input', function(msg){
 			var now = new Date();
 			var day = now.getDay();
+			var allowed = false;
 			for (var i=0; i< node.events.length; i++) {
 				var evtStart = new Date();
 				evtStart.setTime(Date.parse(node.events[i].start));
@@ -66,7 +67,7 @@ module.exports = function(RED) {
 					evtStart.setFullYear(now.getFullYear(),now.getMonth(), now.getDate());
 					// if event ends at midnight, need to add an extra day to the end date
 					var midnight = 0;
-					if(evtEnd.getDay() > day) {
+					if(evtEnd.getHours() +  evtEnd.getMinutes() == 0) {
 						midnight = 1;
 					}
 					evtEnd.setFullYear(now.getFullYear(),now.getMonth(), now.getDate() + midnight);
@@ -76,16 +77,16 @@ module.exports = function(RED) {
 					// console.log("evtEnd: ", evtEnd.toLocaleString());
 					// console.log("now: ", now.toLocaleString());
 
-					if (now >= evtStart &&  now <= evtEnd) {
+					if (now >= evtStart && now <= evtEnd) {
+						allowed = true;
 						node.send([[msg],[]]);
-					} else {
-						node.send([[],msg]);
+						break;
 					}
-				} else {
-					node.send([[],msg]);
 				}
 			}
-
+			if(!allowed) {
+				node.send([[],msg]);
+			}
 		});
 
 		node.centralInterval = setInterval(checkCentral,600000); //once every 10mins
