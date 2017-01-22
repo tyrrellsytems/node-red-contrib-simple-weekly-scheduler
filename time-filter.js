@@ -56,7 +56,6 @@ module.exports = function(RED) {
 				var evtEnd =  new Date();
 				evtEnd.setTime(Date.parse(node.events[i].end));
 
-				// console.log("---------");
 				// console.log("Now: ", now);
 				// console.log("Start: ",evtStart);
 				// console.log("End: ",evtEnd);
@@ -72,9 +71,10 @@ module.exports = function(RED) {
 					}
 					evtEnd.setFullYear(now.getFullYear(),now.getMonth(), now.getDate() + midnight);
 					
-					// console.log("evtStart: ", evtStart);
-					// console.log("evtEnd: ", evtEnd);
-					// console.log("now: ", now);
+                    // console.log("---------");
+					// console.log("evtStart: ", evtStart.toLocaleString());
+					// console.log("evtEnd: ", evtEnd.toLocaleString());
+					// console.log("now: ", now.toLocaleString());
 
 					if (now >= evtStart &&  now <= evtEnd) {
 						node.send([[msg],[]]);
