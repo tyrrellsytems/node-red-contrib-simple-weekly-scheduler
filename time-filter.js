@@ -49,9 +49,7 @@ module.exports = function(RED) {
 
 		node.on('input', function(msg){
 			var now = new Date();
-			var day = now.getUTCDay();
-			var hour = now.getUTCHours();
-			var mins = now.getUTCMinutes();
+			var day = now.getDay();
 			var allowed = false;
 			for (var i=0; i< node.events.length; i++) {
 				var evtStart = new Date();
@@ -60,22 +58,26 @@ module.exports = function(RED) {
 				evtEnd.setTime(Date.parse(node.events[i].end));
 
 				// console.log("Now: ", now);
-				// console.log("Now hour: ", hour);
-				// console.log("Now mins: ", mins);
 				// console.log("Start: ",evtStart);
-				// console.log("Start hour: ",evtStart.getUTCHours());
-				// console.log("Start mins: ",evtStart.getUTCMinutes());
 				// console.log("End: ",evtEnd);
+				// console.log("evtStart.getDay(): ",evtStart.getDay());
+				// console.log("day: ",day);
 
-				if (evtStart.getUTCDay() === day) { //same day of week
-					evtStart.setFullYear(now.getFullYear(),now.getUTCMonth(), now.getUTCDate());
-					evtEnd.setFullYear(now.getFullYear(),now.getUTCMonth(), now.getUTCDate());
+				if (evtStart.getDay() === day) { //same day of week
+					evtStart.setFullYear(now.getFullYear(),now.getMonth(), now.getDate());
+					// if event ends at midnight, need to add an extra day to the end date
+					var midnight = 0;
+					if(evtEnd.getHours() +  evtEnd.getMinutes() == 0) {
+						midnight = 1;
+					}
+					evtEnd.setFullYear(now.getFullYear(),now.getMonth(), now.getDate() + midnight);
+					
+                    // console.log("---------");
+					// console.log("evtStart: ", evtStart.toLocaleString());
+					// console.log("evtEnd: ", evtEnd.toLocaleString());
+					// console.log("now: ", now.toLocaleString());
 
-					var start = ((evtStart.getUTCHours() * 60) + evtStart.getUTCMinutes());
-					var end = ((evtEnd.getUTCHours() * 60) + evtEnd.getUTCMinutes());
-					var test = ((hour * 60) + mins);
-
-					if (test >= start &&  test <= end) {
+					if (now >= evtStart && now <= evtEnd) {
 						allowed = true;
 						node.send([[msg],[]]);
 						break;
