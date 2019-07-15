@@ -12,7 +12,8 @@ Events are scheduled by dragging out periods of time on a calendar
 style interface
 
 The node will emit messages at the start and end of each event with
-a configurable payload for both messages.
+a configurable payload for both messages. If the node has a message 
+in its input, the node will be fired to get the current payload.
 
 Messages include an `event` object that includes the start and end 
 times

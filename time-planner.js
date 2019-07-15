@@ -196,6 +196,10 @@ module.exports = function(RED) {
         node.interval = setInterval(function() { checkTime(); }, 60000); //once a min
         //checkTime();
 
+	node.on('input', function(msg){
+            firstTime();
+        });
+
         node.on('close', function() {
             clearInterval(node.centralInterval);
             clearInterval(node.interval);
